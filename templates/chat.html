@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Climate AI Assistant</title>
+
+<!-- FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* ---------------- BASE ---------------- */
+body {
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background: radial-gradient(circle at top, #020617, #0f172a);
+    color:#e2e8f0;
+}
+
+/* ---------------- HEADER ---------------- */
+.header {
+    text-align:center;
+    padding:20px;
+    border-bottom:1px solid #1e293b;
+}
+
+.header h1 {
+    font-family:'Orbitron';
+    color:#38bdf8;
+    text-shadow:0 0 15px rgba(56,189,248,0.6);
+}
+
+/* ---------------- BUTTON ---------------- */
+button {
+    padding:10px 16px;
+    margin:8px;
+    border-radius:12px;
+    border:none;
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+    color:#020617;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover {
+    transform:scale(1.06);
+    box-shadow:0 0 20px rgba(56,189,248,0.5);
+}
+
+/* ---------------- CHAT ---------------- */
+.chat-container {
+    max-width:900px;
+    margin:30px auto;
+    background:#1e293b;
+    border-radius:20px;
+    padding:20px;
+    height:75vh;
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* messages */
+.messages {
+    flex:1;
+    overflow-y:auto;
+    padding-right:10px;
+}
+
+/* message bubbles */
+.message {
+    margin:10px 0;
+    padding:12px 14px;
+    border-radius:14px;
+    max-width:75%;
+    line-height:1.4;
+    white-space:pre-line;
+}
+
+.user {
+    background:#38bdf8;
+    color:#020617;
+    align-self:flex-end;
+}
+
+.bot {
+    background:#020617;
+    border:1px solid #1e293b;
+}
+
+/* input */
+.input-box {
+    display:flex;
+    margin-top:10px;
+}
+
+input {
+    flex:1;
+    padding:12px;
+    border-radius:12px;
+    border:none;
+    background:#020617;
+    color:#e2e8f0;
+}
+
+/* ---------------- QUICK ACTIONS ---------------- */
+.quick {
+    text-align:center;
+    margin-top:10px;
+}
+
+.quick button {
+    font-size:12px;
+    padding:6px 10px;
+}
+
+/* ---------------- BACKGROUND ---------------- */
+.bg-anim {
+    position:fixed;
+    inset:0;
+    z-index:-2;
+}
+
+.bg-wave {
+    position:absolute;
+    width:200%;
+    height:200%;
+    background:
+        radial-gradient(circle at 30% 30%, rgba(56,189,248,0.12), transparent 60%),
+        radial-gradient(circle at 70% 60%, rgba(168,85,247,0.10), transparent 60%),
+        radial-gradient(circle at 50% 80%, rgba(34,211,238,0.10), transparent 60%);
+    animation:waveMove 20s linear infinite;
+}
+
+@keyframes waveMove {
+    from { transform:rotate(0deg); }
+    to { transform:rotate(360deg); }
+}
+
+.orb {
+    position:absolute;
+    width:200px;
+    height:200px;
+    border-radius:50%;
+    filter:blur(40px);
+    background:radial-gradient(circle, rgba(56,189,248,0.25), transparent 70%);
+    animation:floatOrb 12s infinite alternate;
+}
+
+.orb:nth-child(2){ left:70%; top:60%; }
+.orb:nth-child(3){ left:30%; top:80%; }
+
+@keyframes floatOrb {
+    from { transform:translate(0,0); }
+    to { transform:translate(100px,-80px); }
+}
+
+.particle {
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:#38bdf8;
+    border-radius:50%;
+    animation:floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+    from { transform:translateY(100vh); }
+    to { transform:translateY(-10vh); }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- BACKGROUND -->
+<div class="bg-anim">
+    <div class="bg-wave"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div id="particles"></div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+    <h1>🧠 Climate AI Assistant</h1>
+    <button onclick="goHome()">⬅ Back to Simulator</button>
+</div>
+
+<!-- CHAT -->
+<div class="chat-container">
+
+    <div id="messages" class="messages"></div>
+
+    <!-- quick prompts -->
+    <div class="quick">
+        <button onclick="ask('Why are agents not cooperating?')">Why no cooperation?</button>
+        <button onclick="ask('Who is free-riding?')">Free riders?</button>
+        <button onclick="ask('Explain coalitions')">Coalitions</button>
+        <button onclick="ask('What if all reduce emissions?')">What-if</button>
+    </div>
+
+    <div class="input-box">
+        <input id="input" placeholder="Ask about the simulation...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+</div>
+
+<script>
+
+// navigation
+function goHome(){
+    window.location.href="/sim";
+}
+
+// particles
+for(let i=0;i<40;i++){
+    let p=document.createElement("div");
+    p.className="particle";
+    p.style.left=Math.random()*100+"vw";
+    p.style.animationDuration=(5+Math.random()*10)+"s";
+    document.getElementById("particles").appendChild(p);
+}
+
+// add message
+function addMessage(text, cls){
+    const div=document.createElement("div");
+    div.className="message "+cls;
+    div.innerText=text;
+
+    const container=document.getElementById("messages");
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+// quick ask
+function ask(q){
+    document.getElementById("input").value=q;
+    sendMessage();
+}
+
+// send
+async function sendMessage(){
+    const input=document.getElementById("input");
+    const msg=input.value;
+
+    if(!msg) return;
+
+    addMessage(msg,"user");
+    input.value="";
+
+    const res=await fetch("/chat_api",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({message:msg})
+    });
+
+    const data=await res.json();
+
+    addMessage(data.reply,"bot");
+}
+
+</script>
+
+</body>
+</html>

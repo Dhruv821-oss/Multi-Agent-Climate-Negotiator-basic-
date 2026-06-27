@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Climate Negotiation Theatre</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin:0;
+    font-family:'Inter';
+    background: radial-gradient(circle at top, #020617, #0f172a);
+    color:#e2e8f0;
+}
+
+/* HEADER */
+.header {
+    text-align:center;
+    padding:20px;
+    border-bottom:1px solid #1e293b;
+}
+
+.header h1 {
+    font-family:'Orbitron';
+    color:#38bdf8;
+    text-shadow:0 0 15px rgba(56,189,248,0.6);
+}
+
+/* BUTTON */
+button {
+    padding:10px 16px;
+    margin:10px;
+    border-radius:12px;
+    border:none;
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+    color:#020617;
+    font-weight:600;
+    cursor:pointer;
+}
+
+button:hover {
+    transform:scale(1.05);
+    box-shadow:0 0 20px rgba(56,189,248,0.5);
+}
+
+/* MAIN */
+.container {
+    max-width:900px;
+    margin:30px auto;
+    text-align:center;
+}
+
+.video-box {
+    background:#1e293b;
+    border-radius:20px;
+    padding:20px;
+    margin-top:20px;
+}
+
+video {
+    width:100%;
+    border-radius:12px;
+}
+
+.prompt {
+    background:#020617;
+    padding:10px;
+    border-radius:10px;
+    margin-top:10px;
+    font-size:12px;
+    text-align:left;
+    max-height:150px;
+    overflow:auto;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>🎬 Climate Negotiation Theatre</h1>
+    <button onclick="goBack()">⬅ Back</button>
+</div>
+
+<div class="container">
+
+    <button onclick="createVideo()">Generate Scene</button>
+
+    <div class="video-box">
+        <video id="videoPlayer" controls></video>
+
+        <div class="prompt" id="promptBox">
+            Prompt will appear here...
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+function goBack(){
+    window.location.href="/sim";
+}
+
+async function createVideo(){
+
+    // 1️⃣ get prompt
+    const p = await fetch("/video_prompt");
+    const pdata = await p.json();
+
+    document.getElementById("promptBox").innerText = pdata.prompt;
+
+    // 2️⃣ generate video
+    const res = await fetch("/generate_video",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({prompt:pdata.prompt})
+    });
+
+    const data = await res.json();
+
+    if(data.error){
+        alert(data.error);
+        return;
+    }
+
+    // ⚠️ depends on API format
+    document.getElementById("videoPlayer").src = data.video_url;
+}
+
+</script>
+
+</body>
+</html>

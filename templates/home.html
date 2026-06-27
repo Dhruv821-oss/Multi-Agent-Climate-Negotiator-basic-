@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Climate MARL Lab</title>
+
+<!-- 🔥 PROFESSIONAL FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background: radial-gradient(circle at top, #020617, #0f172a);
+    color:#e2e8f0;
+}
+
+/* HERO */
+.hero {
+    text-align:center;
+    padding:90px 20px;
+}
+
+.hero h1 {
+    font-family:'Orbitron', sans-serif;
+    font-size:52px;
+    color:#38bdf8;
+    text-shadow:0 0 20px rgba(56,189,248,0.5);
+}
+
+.hero p {
+    max-width:750px;
+    margin:auto;
+    font-size:18px;
+    color:#94a3b8;
+}
+
+/* BUTTONS */
+button {
+    padding:12px 22px;
+    margin:10px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+    color:#020617;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover {
+    transform:scale(1.05);
+    box-shadow:0 0 20px rgba(56,189,248,0.5);
+}
+
+/* SECTIONS */
+.section {
+    padding:60px 20px;
+}
+
+.grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    max-width:1100px;
+    margin:auto;
+}
+
+.card {
+    background:#1e293b;
+    padding:22px;
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    transition:0.3s;
+}
+
+.card:hover {
+    transform:translateY(-6px);
+    box-shadow:0 0 25px rgba(56,189,248,0.25);
+}
+
+.card h3 {
+    color:#38bdf8;
+    font-family:'Orbitron';
+}
+
+/* STATS */
+.stats {
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    margin-top:40px;
+}
+
+.stat h2 {
+    font-family:'Orbitron';
+    color:#38bdf8;
+    font-size:36px;
+}
+
+/* FOOTER */
+.footer {
+    text-align:center;
+    padding:40px;
+    color:#64748b;
+    border-top:1px solid #1e293b;
+}
+/* ================= BACKGROUND ANIMATION ================= */
+
+/* container */
+.bg-anim {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: -2;
+}
+
+/* moving gradient waves */
+.bg-wave {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 30%, rgba(56,189,248,0.15), transparent 60%),
+                radial-gradient(circle at 70% 60%, rgba(168,85,247,0.12), transparent 60%),
+                radial-gradient(circle at 50% 80%, rgba(34,211,238,0.12), transparent 60%);
+    animation: waveMove 20s infinite linear;
+}
+
+@keyframes waveMove {
+    0% { transform: translate(0,0) rotate(0deg); }
+    50% { transform: translate(-10%, -10%) rotate(180deg); }
+    100% { transform: translate(0,0) rotate(360deg); }
+}
+
+/* floating glowing orbs */
+.orb {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(56,189,248,0.25), transparent 70%);
+    filter: blur(40px);
+    animation: floatOrb 12s infinite ease-in-out alternate;
+}
+
+.orb:nth-child(2) {
+    left: 70%;
+    top: 60%;
+    background: radial-gradient(circle, rgba(168,85,247,0.25), transparent 70%);
+    animation-duration: 16s;
+}
+
+.orb:nth-child(3) {
+    left: 30%;
+    top: 80%;
+    background: radial-gradient(circle, rgba(34,211,238,0.25), transparent 70%);
+    animation-duration: 18s;
+}
+
+@keyframes floatOrb {
+    from { transform: translate(0,0); }
+    to { transform: translate(100px, -80px); }
+}
+
+/* tiny particles */
+.particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #38bdf8;
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+    from {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(-10vh);
+        opacity: 1;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="bg-anim">
+    <div class="bg-wave"></div>
+
+    <!-- glowing orbs -->
+    <div class="orb" style="top:10%; left:10%;"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+
+    <!-- particles container -->
+    <div id="particles"></div>
+</div>
+<!-- HERO -->
+<div class="hero">
+    <h1>🌍 Climate MARL Lab</h1>
+    <p>
+        A high-fidelity multi-agent reinforcement learning platform designed to simulate
+        global climate negotiations, cooperation strategies, and long-term environmental outcomes.
+    </p>
+
+    <button onclick="goSim()">🚀 Launch Simulator</button>
+    <button onclick="goExplain()">🧠 Explain Model</button>
+
+    <div class="stats">
+        <div class="stat">
+            <h2 id="agents">0</h2>
+            <p>Agents</p>
+        </div>
+        <div class="stat">
+            <h2 id="features">0</h2>
+            <p>Features</p>
+        </div>
+        <div class="stat">
+            <h2 id="states">0</h2>
+            <p>Dynamic States</p>
+        </div>
+    </div>
+</div>
+
+<!-- SYSTEM DESCRIPTION -->
+<div class="section">
+<h2 style="text-align:center;">System Architecture</h2>
+
+<div class="grid">
+    <div class="card">
+        <h3>🌐 Multi-Agent System</h3>
+        <p>
+            Each agent represents a nation with distinct economic priorities,
+            emission profiles, and strategic objectives.
+        </p>
+    </div>
+
+    <div class="card">
+        <h3>📉 Climate-Economic Tradeoff</h3>
+        <p>
+            Agents balance short-term economic gain with long-term climate risk,
+            leading to complex strategic behavior.
+        </p>
+    </div>
+
+    <div class="card">
+        <h3>🔁 Adaptive Learning</h3>
+        <p>
+            Policies evolve dynamically through reinforcement learning,
+            enabling emergent cooperation and competition.
+        </p>
+    </div>
+</div>
+</div>
+
+<!-- FEATURES -->
+<div class="section">
+<h2 style="text-align:center;">Key Capabilities</h2>
+
+<div class="grid">
+    <div class="card">
+        <h3>🤝 Negotiation Protocol</h3>
+        <p>Multi-round bargaining with counter-offers and deadlines.</p>
+    </div>
+
+    <div class="card">
+        <h3>🏛 Coalition Formation</h3>
+        <p>Agents form alliances based on trust and aligned incentives.</p>
+    </div>
+
+    <div class="card">
+        <h3>⚡ Shock Modeling</h3>
+        <p>External disruptions like disasters and economic collapse.</p>
+    </div>
+</div>
+</div>
+
+<!-- ANALYTICS -->
+<div class="section">
+<h2 style="text-align:center;">Analytics & Insights</h2>
+
+<div class="grid">
+    <div class="card">
+        <h3>📊 Explainability</h3>
+        <p>Decompose rewards into interpretable components.</p>
+    </div>
+
+    <div class="card">
+        <h3>📈 Emergent Behavior</h3>
+        <p>Observe cooperation, inequality, and stability patterns.</p>
+    </div>
+
+    <div class="card">
+        <h3>⚖️ Equilibrium Detection</h3>
+        <p>Identify stable strategic configurations.</p>
+    </div>
+</div>
+</div>
+
+<!-- RESEARCH -->
+<div class="section">
+<h2 style="text-align:center;">Research Impact</h2>
+
+<p style="max-width:900px;margin:auto;text-align:center;color:#94a3b8;">
+This platform serves as a computational laboratory for studying global coordination problems.
+It enables researchers to analyze policy outcomes, simulate interventions, and explore the
+dynamics of cooperation under uncertainty in complex systems.
+</p>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+Climate MARL Lab • AI Research Platform <br><br>
+Team: Anam • Dhruv • Pratishtha
+</div>
+
+<script>
+function goSim() { window.location.href="/sim"; }
+function goExplain() { window.location.href="/explain_ui"; }
+
+function animate(id, target) {
+    let val = 0;
+    const step = target/40;
+    const interval = setInterval(()=>{
+        val += step;
+        if(val>=target){ val=target; clearInterval(interval); }
+        document.getElementById(id).innerText = Math.floor(val);
+    },25);
+}
+// ---------------- PARTICLES ----------------
+function createParticles() {
+    const container = document.getElementById("particles");
+
+    for (let i = 0; i < 40; i++) {
+        const p = document.createElement("div");
+        p.className = "particle";
+
+        p.style.left = Math.random() * 100 + "vw";
+        p.style.animationDuration = (5 + Math.random() * 10) + "s";
+        p.style.opacity = Math.random();
+
+        container.appendChild(p);
+    }
+}
+
+createParticles();
+animate("agents",10);
+animate("features",12);
+animate("states",30);
+</script>
+
+</body>
+</html>

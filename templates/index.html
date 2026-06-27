@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<title>Climate MARL Lab</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at top, #020617, #0f172a);
+    color: #e2e8f0;
+}
+
+header {
+    padding: 20px;
+    text-align: center;
+    background: #020617;
+    border-bottom: 1px solid #1e293b;
+}
+
+h1 {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    color: #38bdf8;
+    text-shadow: 0 0 15px rgba(56,189,248,0.6);
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 20px;
+    
+}
+
+/* ================= BACKGROUND ANIMATION ================= */
+
+.bg-anim {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: -2;
+}
+
+.bg-wave {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 30%, rgba(56,189,248,0.12), transparent 60%),
+                radial-gradient(circle at 70% 60%, rgba(168,85,247,0.10), transparent 60%),
+                radial-gradient(circle at 50% 80%, rgba(34,211,238,0.10), transparent 60%);
+    animation: waveMove 20s infinite linear;
+}
+
+@keyframes waveMove {
+    0% { transform: translate(0,0) rotate(0deg); }
+    50% { transform: translate(-10%, -10%) rotate(180deg); }
+    100% { transform: translate(0,0) rotate(360deg); }
+}
+
+.orb {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(56,189,248,0.25), transparent 70%);
+    filter: blur(40px);
+    animation: floatOrb 12s infinite ease-in-out alternate;
+}
+
+.orb:nth-child(2) {
+    left: 70%;
+    top: 60%;
+    background: radial-gradient(circle, rgba(168,85,247,0.25), transparent 70%);
+}
+
+.orb:nth-child(3) {
+    left: 30%;
+    top: 80%;
+    background: radial-gradient(circle, rgba(34,211,238,0.25), transparent 70%);
+}
+
+@keyframes floatOrb {
+    from { transform: translate(0,0); }
+    to { transform: translate(100px, -80px); }
+}
+
+.particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #38bdf8;
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+    from { transform: translateY(100vh); opacity: 0; }
+    to { transform: translateY(-10vh); opacity: 1; }
+}
+
+.card {
+    background: #1e293b;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(56,189,248,0.2);
+}
+
+.card h3 {
+    font-family: 'Orbitron', sans-serif;
+    color: #38bdf8;
+}
+
+.full { grid-column: span 3; }
+
+input, select {
+    padding: 10px;
+    margin: 6px;
+    border-radius: 10px;
+    border: none;
+    width: 320px;
+    background: #020617;
+    color: #e2e8f0;
+    outline: none;
+}
+
+button {
+    padding: 10px 16px;
+    margin: 6px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    color: #020617;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 20px rgba(56,189,248,0.5);
+}
+
+.metric {
+    font-size: 22px;
+    font-weight: 600;
+    color: #38bdf8;
+}
+
+pre {
+    background: #020617;
+    padding: 10px;
+    border-radius: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-anim">
+    <div class="bg-wave"></div>
+    <div class="orb" style="top:10%; left:10%;"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div id="particles"></div>
+</div>
+
+<div style="background:#111827; padding:10px; overflow:hidden;">
+    <marquee id="newsBar">🌍 Climate News Feed Loading...</marquee>
+</div>
+
+<header>
+    <h1>🌍 Climate MARL Research Lab</h1>
+
+    <button onclick="stepEnv()">Step</button>
+    <button onclick="startAuto()">Auto</button>
+    <button onclick="stopAuto()">Stop</button>
+    <button onclick="resetEnv()">Reset</button>
+    <button onclick="goExplain()">🧠 Explainability</button>
+    <button onclick="compareWorlds()">Compare Worlds</button>
+    <button onclick="goChat()">🤖 AI Assistant</button>
+    <button onclick="goVideo()">🎬 Theatre</button>
+</header>
+
+<!-- CONFIG -->
+<div class="card full">
+<h3>⚙️ Configure Simulation</h3>
+
+<label>Number of Agents:</label>
+<input id="n_agents" type="number" value="3" min="2" max="10">
+
+<br><br>
+
+<label>Agent Names:</label>
+<input id="agent_names" type="text" placeholder="USA, China, India">
+
+<br><br>
+
+<label>Agent Types:</label>
+<input id="agent_types" type="text" placeholder="developed, developing, developing">
+
+<br><br>
+
+<label>Scenario:</label>
+<select id="scenario">
+    <option value="normal">Normal</option>
+    <option value="climate_crisis">Climate Crisis</option>
+    <option value="economic_collapse">Economic Collapse</option>
+    <option value="random_disaster">Random Disaster</option>
+</select>
+
+<br><br>
+
+<button onclick="configureEnv()">Apply Configuration</button>
+</div>
+
+<div class="container">
+
+<div class="card">
+<h3>🌡 Temperature</h3>
+<div class="metric" id="temp">-</div>
+</div>
+
+<div class="card">
+<h3>🌿 Carbon Budget</h3>
+<div class="metric" id="budget">-</div>
+</div>
+
+<div class="card">
+<h3>⚖️ Equilibrium</h3>
+<div class="metric" id="eq">❌</div>
+</div>
+
+<div class="card full">
+<h3>📈 Temperature + Learning</h3>
+<canvas id="mainChart"></canvas>
+</div>
+
+<div class="card">
+<h3>🎯 Policy (Reductions)</h3>
+<canvas id="policyChart"></canvas>
+</div>
+
+<div class="card">
+<h3>🧠 Emergent Behavior</h3>
+<div id="emergent"></div>
+</div>
+
+<div class="card">
+<h3>🌍 Scenario Comparison</h3>
+<pre id="compare"></pre>
+</div>
+
+<div class="card">
+<h3>🤝 Coalitions</h3>
+<pre id="coalitions"></pre>
+</div>
+
+<div class="card">
+<h3>💰 Finance</h3>
+<pre id="finance"></pre>
+</div>
+
+<div class="card">
+<h3>🏆 Rewards</h3>
+<pre id="rewards"></pre>
+</div>
+
+<div class="card">
+<h3>🔗 Trust</h3>
+<pre id="trust"></pre>
+</div>
+
+</div>
+
+<script>
+
+// ---------------- STATE ----------------
+let interval = null;
+
+// ---------------- CHARTS ----------------
+const mainChart = new Chart(document.getElementById("mainChart"), {
+    type: "line",
+    data: {
+        labels: [],
+        datasets: [
+            { label: "Temperature", data: [] },
+            { label: "Avg Reduction", data: [] }
+        ]
+    }
+});
+
+const policyChart = new Chart(document.getElementById("policyChart"), {
+    type: "bar",
+    data: { labels: [], datasets: [{ label: "Reduction", data: [] }] }
+});
+
+// ---------------- HELPERS ----------------
+function variance(arr) {
+    if (!arr || arr.length === 0) return 0;
+    const mean = arr.reduce((a,b)=>a+b)/arr.length;
+    return arr.reduce((a,b)=>a+(b-mean)**2,0)/arr.length;
+}
+
+// ---------------- NAV ----------------
+function goVideo(){ window.location.href="/video"; }
+function goChat(){ window.location.href="/chat"; }
+function goExplain(){ window.location.href="/explain_ui"; }
+
+// ---------------- PARTICLES ----------------
+function createParticles() {
+    const container = document.getElementById("particles");
+    for (let i = 0; i < 40; i++) {
+        const p = document.createElement("div");
+        p.className = "particle";
+        p.style.left = Math.random() * 100 + "vw";
+        p.style.animationDuration = (5 + Math.random() * 10) + "s";
+        p.style.opacity = Math.random();
+        container.appendChild(p);
+    }
+}
+createParticles();
+
+// ---------------- STEP ----------------
+async function stepEnv() {
+    const res = await fetch("/step");
+    const data = await res.json();
+
+    if (data.error) return alert(data.error);
+
+    if (data.news && data.news.length > 0) {
+        document.getElementById("newsBar").innerText =
+            data.news.join("   |   ");
+    }
+
+    document.getElementById("temp").innerText = data.temperature.toFixed(3);
+    document.getElementById("budget").innerText = data.carbon_budget.toFixed(2);
+    document.getElementById("eq").innerText =
+        data.equilibrium ? "✅ Stable" : "❌ Unstable";
+
+    const reductions = Object.values(data.final_reductions || {});
+
+    if (reductions.length > 0) {
+        const avg = reductions.reduce((a,b)=>a+b)/reductions.length;
+
+        mainChart.data.labels.push(data.step);
+        mainChart.data.datasets[0].data.push(data.temperature);
+        mainChart.data.datasets[1].data.push(avg);
+        mainChart.update();
+
+        policyChart.data.labels = data.agents;
+        policyChart.data.datasets[0].data = reductions;
+        policyChart.update();
+
+        const ineq = variance(reductions);
+
+        document.getElementById("emergent").innerHTML =
+            `Cooperation: ${avg.toFixed(2)} <br>
+             Inequality: ${ineq.toFixed(3)} <br>
+             Coalitions: ${data.coalitions.length}`;
+    }
+
+    document.getElementById("coalitions").innerText =
+        JSON.stringify(data.coalitions, null, 2);
+
+    document.getElementById("finance").innerText =
+        JSON.stringify(data.finance, null, 2);
+
+    document.getElementById("rewards").innerText =
+        JSON.stringify(data.rewards, null, 2);
+
+    document.getElementById("trust").innerText =
+        JSON.stringify(data.trust, null, 2);
+
+    localStorage.setItem("lastStepUpdate", Date.now());
+}
+
+// ---------------- AUTO ----------------
+function startAuto() {
+    if (!interval) interval = setInterval(stepEnv, 800);
+}
+
+function stopAuto() {
+    clearInterval(interval);
+    interval = null;
+}
+
+// ---------------- RESET ----------------
+async function resetEnv() {
+    await fetch("/reset");
+    location.reload();
+}
+
+// ---------------- CONFIG FIXED ----------------
+async function configureEnv() {
+    const n_agents = parseInt(document.getElementById("n_agents").value);
+    const names = document.getElementById("agent_names").value;
+    const types = document.getElementById("agent_types").value;
+    const scenario = document.getElementById("scenario").value;
+
+    let payload = { n_agents, scenario };
+
+    if (names.trim().length > 0) payload.agent_names = names;
+    if (types.trim().length > 0) payload.agent_types = types;
+
+    await fetch("/configure", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+    });
+
+    location.reload();
+}
+
+// ---------------- COMPARE ----------------
+async function compareWorlds() {
+    const res = await fetch("/compare");
+    const data = await res.json();
+    document.getElementById("compare").innerText =
+        JSON.stringify(data, null, 2);
+}
+
+</script>
+
+</body>
+</html>

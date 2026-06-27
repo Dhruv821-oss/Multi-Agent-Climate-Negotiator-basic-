@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MARL Explainability</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- 🔥 FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* ---------------- BASE ---------------- */
+body {
+    margin:0;
+    padding:20px;
+    font-family:'Inter',sans-serif;
+    background: radial-gradient(circle at top, #020617, #0f172a);
+    color:#e2e8f0;
+}
+
+/* ---------------- HEADER ---------------- */
+h1 {
+    font-family:'Orbitron';
+    color:#38bdf8;
+    text-shadow:0 0 15px rgba(56,189,248,0.6);
+}
+
+/* ---------------- GRID ---------------- */
+.grid {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+/* ---------------- CARD ---------------- */
+.card {
+    background:#1e293b;
+    padding:18px;
+    border-radius:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.35);
+    transition:0.3s;
+}
+
+.card:hover {
+    transform:translateY(-5px);
+    box-shadow:0 0 25px rgba(56,189,248,0.2);
+}
+
+.card h3 {
+    font-family:'Orbitron';
+    color:#38bdf8;
+}
+
+/* ---------------- BUTTON ---------------- */
+button {
+    padding:10px 16px;
+    margin:10px 6px;
+    border-radius:12px;
+    border:none;
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+    color:#020617;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover {
+    transform:scale(1.06);
+    box-shadow:0 0 20px rgba(56,189,248,0.5);
+}
+
+/* ---------------- PRE ---------------- */
+pre {
+    background:#020617;
+    padding:10px;
+    border-radius:10px;
+    max-height:200px;
+    overflow-y:auto;
+}
+
+/* ---------------- BACKGROUND ---------------- */
+.bg-anim {
+    position:fixed;
+    inset:0;
+    z-index:-2;
+}
+
+.bg-wave {
+    position:absolute;
+    width:200%;
+    height:200%;
+    background:
+        radial-gradient(circle at 30% 30%, rgba(56,189,248,0.12), transparent 60%),
+        radial-gradient(circle at 70% 60%, rgba(168,85,247,0.10), transparent 60%),
+        radial-gradient(circle at 50% 80%, rgba(34,211,238,0.10), transparent 60%);
+    animation:waveMove 20s linear infinite;
+}
+
+@keyframes waveMove {
+    from { transform:rotate(0deg); }
+    to { transform:rotate(360deg); }
+}
+
+.orb {
+    position:absolute;
+    width:200px;
+    height:200px;
+    border-radius:50%;
+    filter:blur(40px);
+    background:radial-gradient(circle, rgba(56,189,248,0.25), transparent 70%);
+    animation:floatOrb 12s infinite alternate;
+}
+
+.orb:nth-child(2){ left:70%; top:60%; }
+.orb:nth-child(3){ left:30%; top:80%; }
+
+@keyframes floatOrb {
+    from { transform:translate(0,0); }
+    to { transform:translate(100px,-80px); }
+}
+
+.particle {
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:#38bdf8;
+    border-radius:50%;
+    animation:floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+    from { transform:translateY(100vh); }
+    to { transform:translateY(-10vh); }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- BACKGROUND -->
+<div class="bg-anim">
+    <div class="bg-wave"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div id="particles"></div>
+</div>
+
+<h1>🧠 Model Explainability Dashboard</h1>
+
+<button onclick="goHome()">⬅ Back to Simulator</button>
+<button onclick="loadExplain()">Refresh</button>
+
+<div class="card">
+    <h3>📊 Reward Breakdown</h3>
+    <canvas id="rewardChart"></canvas>
+</div>
+
+<div class="grid">
+
+<div class="card">
+    <h3>Reward Breakdown (Raw)</h3>
+    <pre id="rewards"></pre>
+</div>
+
+<div class="card">
+    <h3>Negotiation</h3>
+    <pre id="negotiation"></pre>
+</div>
+
+<div class="card">
+    <h3>System State</h3>
+    <pre id="state"></pre>
+</div>
+
+<div class="card">
+    <h3>Learning Trend</h3>
+    <canvas id="chart"></canvas>
+</div>
+
+</div>
+
+<script>
+
+// ---------------- NAV ----------------
+function goHome(){
+    window.location.href="/sim";
+}
+
+// ---------------- PARTICLES ----------------
+for(let i=0;i<40;i++){
+    let p=document.createElement("div");
+    p.className="particle";
+    p.style.left=Math.random()*100+"vw";
+    p.style.animationDuration=(5+Math.random()*10)+"s";
+    document.getElementById("particles").appendChild(p);
+}
+
+// ---------------- LINE CHART ----------------
+let rewards_history=[];
+
+const chart=new Chart(document.getElementById("chart"),{
+    type:"line",
+    data:{labels:[],datasets:[{label:"Avg Reward",data:[]}]}
+});
+
+// ---------------- STACKED CHART ----------------
+let rewardChart=new Chart(document.getElementById("rewardChart"),{
+    type:"bar",
+    data:{labels:[],datasets:[]},
+    options:{
+        responsive:true,
+        scales:{x:{stacked:true},y:{stacked:true}}
+    }
+});
+
+// ---------------- AUTO SYNC ----------------
+setInterval(loadExplain,1000);
+
+window.addEventListener("storage",loadExplain);
+
+// ---------------- LOAD ----------------
+async function loadExplain(){
+
+    const res=await fetch("/explain");
+    const data=await res.json();
+
+    if(data.error){ alert(data.error); return; }
+
+    document.getElementById("rewards").innerText=
+        JSON.stringify(data.rewards,null,2);
+
+    document.getElementById("negotiation").innerText=
+        JSON.stringify({
+            reductions:data.reductions,
+            coalitions:data.coalitions
+        },null,2);
+
+    document.getElementById("state").innerText=
+        JSON.stringify({
+            temperature:data.temperature,
+            budget:data.budget
+        },null,2);
+
+    const rewards=data.rewards;
+    const agents=Object.keys(rewards);
+    if(agents.length===0)return;
+
+    const components=Object.keys(rewards[agents[0]]);
+
+    const colors=[
+        "#38bdf8","#f87171","#34d399",
+        "#fbbf24","#a78bfa","#fb7185"
+    ];
+
+    rewardChart.data.labels=agents;
+    rewardChart.data.datasets=components.map((c,i)=>({
+        label:c,
+        data:agents.map(a=>rewards[a][c]),
+        backgroundColor:colors[i%colors.length],
+        stack:"total"
+    }));
+    rewardChart.update();
+
+    const avg=Object.values(rewards)
+        .map(r=>Object.values(r).reduce((a,b)=>a+b,0))
+        .reduce((a,b)=>a+b)/agents.length;
+
+    rewards_history.push(avg);
+
+    chart.data.labels.push(rewards_history.length);
+    chart.data.datasets[0].data.push(avg);
+    chart.update();
+}
+
+</script>
+
+</body>
+</html>
