@@ -1,152 +1,186 @@
-🌍 Climate MARL Lab: Multi-Agent Reinforcement Learning for Climate Negotiation
+# 🌍 Climate MARL Lab: Multi-Agent Reinforcement Learning for Climate Negotiation
 
-An AI-powered research platform that simulates global climate negotiations using Multi-Agent Reinforcement Learning (MARL), enabling autonomous agents to balance economic growth, environmental sustainability, and international cooperation.
+> **An AI-powered research platform that simulates global climate negotiations using Multi-Agent Reinforcement Learning (MARL), enabling autonomous agents to balance economic growth, environmental sustainability, and international cooperation.**
 
+---
 
-
-
-
-
-
-
-
-
-📖 Overview
+# 📖 Overview
 
 Climate change is one of humanity's most complex challenges, requiring cooperation between nations with different economic priorities, emission levels, and resource constraints. Traditional climate models often focus on environmental forecasting but rarely capture the dynamic strategic interactions between countries.
 
-Climate MARL Lab addresses this challenge by creating a simulation environment where autonomous AI agents—representing countries—learn to negotiate climate policies through Multi-Agent Reinforcement Learning (MARL).
+**Climate MARL Lab** addresses this challenge by creating a simulation environment where autonomous AI agents—representing countries—learn to negotiate climate policies through **Multi-Agent Reinforcement Learning (MARL)**.
 
 Each agent independently learns how to balance:
 
-📈 Economic Growth
-🌱 Carbon Emission Reduction
-⚡ Renewable Energy Investment
-🤝 International Cooperation
-🌍 Long-Term Climate Sustainability
+* 📈 Economic Growth
+* 🌱 Carbon Emission Reduction
+* ⚡ Renewable Energy Investment
+* 🤝 International Cooperation
+* 🌍 Long-Term Climate Sustainability
 
 The project aims to serve as a research platform for AI, sustainability, computational economics, and policy analysis.
 
-🎯 Objectives
-Develop a realistic climate negotiation simulator.
-Study cooperation and competition among autonomous agents.
-Analyze policy emergence under dynamic global conditions.
-Explore Explainable AI (XAI) for transparent decision-making.
-Provide a modular platform for MARL research.
-🚀 Features
-🌍 Multi-Agent Climate Negotiation Environment
-🤖 Autonomous Country Agents
-🧠 Multi-Agent Reinforcement Learning
-📊 Dynamic Climate & Economic Simulation
-⚡ Renewable Energy Investment Strategies
-💰 Carbon Tax & Emission Policy Decisions
-🌪 Climate Disaster Simulation
-📉 Global Carbon Budget Tracking
-📈 Real-Time Dashboards
-🔍 Explainable AI Visualizations
-🎬 Cinematic Simulation Playback
-📚 Research-Friendly Modular Architecture
-🏛 Simulation Environment
+---
+
+# 🎯 Objectives
+
+* Develop a realistic climate negotiation simulator.
+* Study cooperation and competition among autonomous agents.
+* Analyze policy emergence under dynamic global conditions.
+* Explore Explainable AI (XAI) for transparent decision-making.
+* Provide a modular platform for MARL research.
+
+---
+
+# 🚀 Features
+
+* 🌍 Multi-Agent Climate Negotiation Environment
+* 🤖 Autonomous Country Agents
+* 🧠 Multi-Agent Reinforcement Learning
+* 📊 Dynamic Climate & Economic Simulation
+* ⚡ Renewable Energy Investment Strategies
+* 💰 Carbon Tax & Emission Policy Decisions
+* 🌪 Climate Disaster Simulation
+* 📉 Global Carbon Budget Tracking
+* 📈 Real-Time Dashboards
+* 🔍 Explainable AI Visualizations
+* 🎬 Cinematic Simulation Playback
+* 📚 Research-Friendly Modular Architecture
+
+---
+
+# 🏛 Simulation Environment
 
 Each episode simulates global climate negotiations over multiple policy cycles.
 
 Every country has unique characteristics including:
 
-GDP
-Population
-Industrial Capacity
-Carbon Emissions
-Renewable Energy Percentage
-Climate Vulnerability
-Resource Availability
-International Influence
+* GDP
+* Population
+* Industrial Capacity
+* Carbon Emissions
+* Renewable Energy Percentage
+* Climate Vulnerability
+* Resource Availability
+* International Influence
 
 The environment evolves dynamically based on collective decisions made by all agents.
 
-🤖 Agent Actions
+---
+
+# 🤖 Agent Actions
 
 Each agent can make strategic decisions such as:
 
-Increase Renewable Energy Investment
-Expand Industrial Production
-Reduce Carbon Emissions
-Implement Carbon Tax
-Invest in Climate Adaptation
-Participate in Global Climate Agreements
-Trade Carbon Credits
-Share Green Technologies
-Allocate Disaster Relief Funds
-🎁 Reward Function
+* Increase Renewable Energy Investment
+* Expand Industrial Production
+* Reduce Carbon Emissions
+* Implement Carbon Tax
+* Invest in Climate Adaptation
+* Participate in Global Climate Agreements
+* Trade Carbon Credits
+* Share Green Technologies
+* Allocate Disaster Relief Funds
+
+---
+
+# 🎁 Reward Function
 
 Agents optimize long-term sustainability using a balanced reward system based on:
 
-Economic Growth
-Environmental Protection
-Cooperation
-Climate Stability
-Resource Management
-Disaster Resilience
+* Economic Growth
+* Environmental Protection
+* Cooperation
+* Climate Stability
+* Resource Management
+* Disaster Resilience
 
 This creates realistic trade-offs between short-term gains and long-term sustainability.
 
-🌎 Dynamic Global Events
+---
+
+# 🌎 Dynamic Global Events
 
 The simulator introduces stochastic events such as:
 
-Wildfires
-Floods
-Heatwaves
-Economic Recession
-Global Pandemic
-Energy Crisis
-Geopolitical Conflict
-Technological Breakthroughs
+* Wildfires
+* Floods
+* Heatwaves
+* Economic Recession
+* Global Pandemic
+* Energy Crisis
+* Geopolitical Conflict
+* Technological Breakthroughs
 
 These events influence both the environment and agent strategies.
 
-🧠 AI Concepts Used
-Multi-Agent Reinforcement Learning (MARL)
-Deep Reinforcement Learning
-PPO
-DQN
-Centralized Training, Decentralized Execution (CTDE)
-Policy Optimization
-Self-Play Learning
-Emergent Cooperation
-Non-Stationary Environments
-Explainable AI (XAI)
-📊 Visualization Dashboard
+---
+
+# 🧠 AI Concepts Used
+
+* Multi-Agent Reinforcement Learning (MARL)
+* Deep Reinforcement Learning
+* Proximal Policy Optimization (PPO)
+* Deep Q-Network (DQN)
+* Centralized Training, Decentralized Execution (CTDE)
+* Policy Optimization
+* Self-Play Learning
+* Emergent Cooperation
+* Non-Stationary Environments
+* Explainable AI (XAI)
+
+---
+
+# 📊 Visualization Dashboard
 
 The platform provides interactive analytics including:
 
-Global Temperature Trends
-CO₂ Emissions
-GDP Growth
-Renewable Energy Adoption
-Agent Rewards
-Negotiation Timeline
-Cooperation Index
-Carbon Budget
-Climate Risk Heatmaps
-🛠 Tech Stack
-Programming
-Python
-Reinforcement Learning
-PyTorch
-RLlib
-PettingZoo
-Gymnasium
-Data Science
-NumPy
-Pandas
-Matplotlib
-Visualization
-Plotly
-Streamlit
-Dash
-Backend
-FastAPI
-📂 Project Structure
+* Global Temperature Trends
+* CO₂ Emissions
+* GDP Growth
+* Renewable Energy Adoption
+* Agent Rewards
+* Negotiation Timeline
+* Cooperation Index
+* Carbon Budget
+* Climate Risk Heatmaps
+
+---
+
+# 🛠 Tech Stack
+
+## Programming
+
+* Python
+
+## Reinforcement Learning
+
+* PyTorch
+* RLlib
+* PettingZoo
+* Gymnasium
+
+## Data Science
+
+* NumPy
+* Pandas
+* Matplotlib
+
+## Visualization
+
+* Plotly
+* Streamlit
+* Dash
+
+## Backend
+
+* FastAPI
+
+---
+
+# 📂 Project Structure
+
+```text
 Climate-MARL-Lab/
 │
 ├── environments/
@@ -163,19 +197,12 @@ Climate-MARL-Lab/
 │   ├── DQN/
 │
 ├── dashboard/
-│
 ├── visualization/
-│
 ├── configs/
-│
 ├── datasets/
-│
 ├── notebooks/
-│
 ├── experiments/
-│
 ├── models/
-│
 ├── utils/
 │
 ├── app.py
@@ -183,50 +210,69 @@ Climate-MARL-Lab/
 ├── evaluate.py
 ├── requirements.txt
 └── README.md
-🔬 Research Applications
-Climate Policy Research
-AI for Sustainability
-Computational Social Science
-Environmental Economics
-International Relations
-AI Governance
-Disaster Management
-Resource Allocation
-Smart Decision Support Systems
-📈 Future Roadmap
-Multi-objective Reinforcement Learning
-Carbon Credit Marketplace
-Human-in-the-Loop Negotiation
-Large Language Model–Based Diplomacy Agents
-Digital Twin Climate Simulation
-Satellite Data Integration
-Explainable Negotiation Reports
-Distributed Multi-Agent Training
-Real-World Climate Dataset Integration
-🤝 Contributing
+```
+
+---
+
+# 🔬 Research Applications
+
+* Climate Policy Research
+* AI for Sustainability
+* Computational Social Science
+* Environmental Economics
+* International Relations
+* AI Governance
+* Disaster Management
+* Resource Allocation
+* Smart Decision Support Systems
+
+---
+
+# 📈 Future Roadmap
+
+* Multi-objective Reinforcement Learning
+* Carbon Credit Marketplace
+* Human-in-the-Loop Negotiation
+* Large Language Model (LLM)-Based Diplomacy Agents
+* Digital Twin Climate Simulation
+* Satellite Data Integration
+* Explainable Negotiation Reports
+* Distributed Multi-Agent Training
+* Real-World Climate Dataset Integration
+
+---
+
+# 🤝 Contributing
 
 Contributions are welcome!
 
 If you'd like to improve the simulator, fix bugs, add environments, or implement new MARL algorithms, feel free to fork the repository and submit a pull request.
 
-📄 License
+---
 
-This project is licensed under the MIT License.
+# 📄 License
 
-👨‍💻 Author
+This project is licensed under the **MIT License**.
 
-Dhruv Saxena
+---
+
+# 👨‍💻 Author
+
+**Dhruv Saxena**
 
 Artificial Intelligence & Machine Learning Researcher
 
-Research Interests:
+### Research Interests
 
-Multi-Agent Reinforcement Learning
-Explainable AI
-Climate Intelligence
-Computational Sustainability
-AI for Social Good
-Intelligent Decision-Making Systems
-🌟 Vision
+* Multi-Agent Reinforcement Learning
+* Explainable AI
+* Climate Intelligence
+* Computational Sustainability
+* AI for Social Good
+* Intelligent Decision-Making Systems
 
-"Climate MARL Lab aims to explore how autonomous AI agents can learn cooperation, negotiation, and sustainable decision-making in complex global environments—bridging artificial intelligence with one of humanity's most pressing challenges: climate change."
+---
+
+# 🌟 Vision
+
+> *"Climate MARL Lab aims to explore how autonomous AI agents can learn cooperation, negotiation, and sustainable decision-making in complex global environments, bridging artificial intelligence with one of humanity's most pressing challenges: climate change."*
