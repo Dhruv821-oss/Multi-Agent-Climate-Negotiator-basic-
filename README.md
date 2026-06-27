@@ -67,6 +67,9 @@ Every country has unique characteristics including:
 The environment evolves dynamically based on collective decisions made by all agents.
 
 ---
+<img width="1847" height="912" alt="Screenshot 2026-05-01 235658" src="https://github.com/user-attachments/assets/cda905f1-2a9f-43e9-9609-651f5a79b91e" />
+<img width="1558" height="792" alt="Screenshot 2026-05-01 235706" src="https://github.com/user-attachments/assets/6a8d8408-edfa-420a-864c-2c50c01c8135" />
+<img width="1825" height="702" alt="Screenshot 2026-05-01 235720" src="https://github.com/user-attachments/assets/a4bb324e-c259-4c87-b3c7-7afccfad6166" />
 
 # 🤖 Agent Actions
 
